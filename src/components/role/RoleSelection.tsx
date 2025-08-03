@@ -1,138 +1,128 @@
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, TrendingUp, Crown } from "lucide-react";
+import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, ShoppingCart, Store } from 'lucide-react';
 
-const roles = [
+const roleOptions = [
   {
-    id: "buyer" as const,
-    title: "Buyer",
-    description: "Browse and purchase iGaming assets",
+    id: 'buyer',
+    title: 'Buyer',
+    description: 'Browse and acquire iGaming assets',
     icon: ShoppingCart,
-    features: ["Browse listings", "Request access", "Sign NDAs", "Enter escrow"],
+    features: [
+      'Browse verified listings',
+      'Access detailed asset information',
+      'Secure escrow transactions',
+      'Direct seller communication'
+    ]
   },
   {
-    id: "seller" as const,
-    title: "Seller", 
-    description: "List and sell your iGaming assets",
-    icon: TrendingUp,
-    features: ["Create listings", "Manage data rooms", "Approve requests", "Enter escrow"],
-  },
+    id: 'seller',
+    title: 'Seller',
+    description: 'List and sell your iGaming assets',
+    icon: Store,
+    features: [
+      'Create detailed listings',
+      'Manage data rooms',
+      'Approve buyer access',
+      'Track listing performance'
+    ]
+  }
 ];
 
-export const RoleSelection: React.FC = () => {
-  const [selectedRoles, setSelectedRoles] = useState<("buyer" | "seller")[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { updateProfile } = useAuth();
-  const { toast } = useToast();
+export const RoleSelection = () => {
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const { updateProfile, loading } = useAuth();
 
-  const toggleRole = (role: "buyer" | "seller") => {
+  const toggleRole = (roleId: string) => {
     setSelectedRoles(prev => 
-      prev.includes(role) 
-        ? prev.filter(r => r !== role)
-        : [...prev, role]
+      prev.includes(roleId)
+        ? prev.filter(id => id !== roleId)
+        : [...prev, roleId]
     );
   };
 
   const handleContinue = async () => {
-    if (selectedRoles.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Select Role",
-        description: "Please select at least one role to continue.",
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { error } = await updateProfile({ roles: selectedRoles });
-      
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Update Failed",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Profile Updated",
-          description: "Your roles have been set successfully.",
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Update Failed",
-        description: "An unexpected error occurred.",
-      });
-    } finally {
-      setLoading(false);
-    }
+    if (selectedRoles.length === 0) return;
+    
+    await updateProfile({ roles: selectedRoles });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-8">
-          <Crown className="mx-auto h-12 w-12 text-blue-600 mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Role</h1>
-          <p className="text-gray-600">Select your role(s) to get started on the marketplace</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Choose Your Role
+          </h1>
+          <p className="text-muted-foreground">
+            Select one or more roles to get started. You can change this later.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {roles.map((role) => (
-            <Card
-              key={role.id}
-              className={`p-6 cursor-pointer transition-all hover:shadow-lg ${
-                selectedRoles.includes(role.id)
-                  ? "ring-2 ring-blue-500 bg-blue-50"
-                  : "hover:bg-gray-50"
-              }`}
-              onClick={() => toggleRole(role.id)}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className={`p-3 rounded-lg ${
-                  selectedRoles.includes(role.id)
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 text-gray-600"
-                }`}>
-                  <role.icon className="h-6 w-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900">{role.title}</h3>
-                  <p className="text-gray-600">{role.description}</p>
-                </div>
-              </div>
-
-              <ul className="space-y-2">
-                {role.features.map((feature) => (
-                  <li key={feature} className="flex items-center text-sm text-gray-600">
-                    <div className="h-1.5 w-1.5 bg-blue-600 rounded-full mr-3" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          ))}
+          {roleOptions.map((role) => {
+            const Icon = role.icon;
+            const isSelected = selectedRoles.includes(role.id);
+            
+            return (
+              <Card 
+                key={role.id}
+                className={`cursor-pointer transition-all ${
+                  isSelected ? 'ring-2 ring-primary bg-accent' : 'hover:shadow-lg'
+                }`}
+                onClick={() => toggleRole(role.id)}
+              >
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Icon className="h-8 w-8 text-primary" />
+                      <div>
+                        <CardTitle className="text-xl">{role.title}</CardTitle>
+                        <CardDescription>{role.description}</CardDescription>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <CheckCircle className="h-6 w-6 text-primary" />
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {role.features.map((feature, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <CheckCircle className="h-4 w-4 text-primary" />
+                        <span className="text-sm text-muted-foreground">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="text-center">
-          <Button
-            onClick={handleContinue}
-            disabled={loading || selectedRoles.length === 0}
+          <Button 
             size="lg"
-            className="px-8"
+            onClick={handleContinue}
+            disabled={selectedRoles.length === 0 || loading}
           >
-            {loading ? "Setting up..." : "Continue"}
+            {loading ? 'Setting up...' : `Continue as ${selectedRoles.join(' & ')}`}
           </Button>
-          <p className="text-sm text-gray-500 mt-2">
-            You can add more roles later in your settings
-          </p>
+          
+          {selectedRoles.length > 0 && (
+            <div className="mt-4 flex justify-center space-x-2">
+              {selectedRoles.map(roleId => (
+                <Badge key={roleId} variant="secondary">
+                  {roleOptions.find(r => r.id === roleId)?.title}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

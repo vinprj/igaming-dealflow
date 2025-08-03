@@ -1,22 +1,33 @@
 
-import React, { useState } from "react";
-import { AuthLayout } from "@/components/auth/AuthLayout";
-import { LoginForm } from "@/components/auth/LoginForm";
-import { SignUpForm } from "@/components/auth/SignUpForm";
+import React, { useState } from 'react';
+import { AuthLayout } from '@/components/auth/AuthLayout';
+import { LoginForm } from '@/components/auth/LoginForm';
+import { SignUpForm } from '@/components/auth/SignUpForm';
 
-export default function Auth() {
-  const [isLogin, setIsLogin] = useState(true);
+const Auth = () => {
+  const [isLoginMode, setIsLoginMode] = useState(true);
+
+  const toggleMode = () => setIsLoginMode(!isLoginMode);
+
+  if (isLoginMode) {
+    return (
+      <AuthLayout
+        title="Welcome back"
+        subtitle="Sign in to your iGaming M&A account"
+      >
+        <LoginForm onToggleMode={toggleMode} />
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout
-      title={isLogin ? "Welcome Back" : "Join iGaming M&A"}
-      subtitle={isLogin ? "Sign in to access your account" : "Create your account to get started"}
+      title="Create your account"
+      subtitle="Join the premier iGaming M&A marketplace"
     >
-      {isLogin ? (
-        <LoginForm onToggleMode={() => setIsLogin(false)} />
-      ) : (
-        <SignUpForm onToggleMode={() => setIsLogin(true)} />
-      )}
+      <SignUpForm onToggleMode={toggleMode} />
     </AuthLayout>
   );
-}
+};
+
+export default Auth;

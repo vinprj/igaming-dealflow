@@ -1,112 +1,88 @@
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 
 interface SignUpFormProps {
   onToggleMode: () => void;
 }
 
-export const SignUpForm: React.FC<SignUpFormProps> = ({ onToggleMode }) => {
+export const SignUpForm = ({ onToggleMode }: SignUpFormProps) => {
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    organizationName: ''
   });
-  const [loading, setLoading] = useState(false);
-  const { signUp } = useAuth();
-  const { toast } = useToast();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const { signUp, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Password Mismatch",
-        description: "Passwords do not match.",
-      });
       return;
     }
 
-    setLoading(true);
+    await signUp(formData.email, formData.password, {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      organization_name: formData.organizationName
+    });
+  };
 
-    try {
-      const { error } = await signUp(formData.email, formData.password, {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-      });
-      
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Registration Failed",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Registration Successful!",
-          description: "Please check your email to verify your account.",
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Registration Failed",
-        description: "An unexpected error occurred.",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="firstName" className="text-white">First Name</Label>
+          <Label htmlFor="firstName">First name</Label>
           <Input
             id="firstName"
             name="firstName"
-            type="text"
             value={formData.firstName}
             onChange={handleChange}
             required
-            className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            placeholder="First name"
+            className="mt-1"
           />
         </div>
-        
         <div>
-          <Label htmlFor="lastName" className="text-white">Last Name</Label>
+          <Label htmlFor="lastName">Last name</Label>
           <Input
             id="lastName"
             name="lastName"
-            type="text"
             value={formData.lastName}
             onChange={handleChange}
             required
-            className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-            placeholder="Last name"
+            className="mt-1"
           />
         </div>
       </div>
 
       <div>
-        <Label htmlFor="email" className="text-white">Email</Label>
+        <Label htmlFor="organizationName">Organization name</Label>
+        <Input
+          id="organizationName"
+          name="organizationName"
+          value={formData.organizationName}
+          onChange={handleChange}
+          required
+          className="mt-1"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="email">Email address</Label>
         <Input
           id="email"
           name="email"
@@ -114,13 +90,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onToggleMode }) => {
           value={formData.email}
           onChange={handleChange}
           required
-          className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-          placeholder="Enter your email"
+          className="mt-1"
         />
       </div>
-      
+
       <div>
-        <Label htmlFor="password" className="text-white">Password</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           name="password"
@@ -128,13 +103,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onToggleMode }) => {
           value={formData.password}
           onChange={handleChange}
           required
-          className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-          placeholder="Create a password"
+          className="mt-1"
         />
       </div>
 
       <div>
-        <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
+        <Label htmlFor="confirmPassword">Confirm password</Label>
         <Input
           id="confirmPassword"
           name="confirmPassword"
@@ -142,23 +116,18 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onToggleMode }) => {
           value={formData.confirmPassword}
           onChange={handleChange}
           required
-          className="bg-white/10 border-white/20 text-white placeholder:text-gray-300"
-          placeholder="Confirm your password"
+          className="mt-1"
         />
       </div>
 
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-      >
+      <Button type="submit" className="w-full" disabled={loading}>
         {loading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating Account...
+            Creating account...
           </>
         ) : (
-          "Create Account"
+          'Create account'
         )}
       </Button>
 
@@ -166,7 +135,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({ onToggleMode }) => {
         <button
           type="button"
           onClick={onToggleMode}
-          className="text-blue-300 hover:text-blue-200 text-sm underline"
+          className="text-sm text-primary hover:underline"
         >
           Already have an account? Sign in
         </button>
