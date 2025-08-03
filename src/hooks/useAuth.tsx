@@ -7,9 +7,9 @@ import { useToast } from '@/hooks/use-toast';
 interface UserProfile {
   id: string;
   email: string;
-  roles: string[];
+  roles: ('buyer' | 'seller' | 'admin')[];
   is_verified: boolean;
-  kyc_level: string;
+  kyc_level: 'none' | 'basic' | 'advanced';
   first_name?: string;
   last_name?: string;
   organization_id?: string;
