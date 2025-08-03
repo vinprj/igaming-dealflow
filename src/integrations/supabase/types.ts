@@ -155,37 +155,99 @@ export type Database = {
           },
         ]
       }
+      docusign_envelopes: {
+        Row: {
+          buyer_id: string
+          completed_at: string | null
+          created_at: string
+          document_type: string
+          envelope_id: string
+          id: string
+          listing_id: string
+          seller_id: string
+          signing_url_buyer: string | null
+          signing_url_seller: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          completed_at?: string | null
+          created_at?: string
+          document_type?: string
+          envelope_id: string
+          id?: string
+          listing_id: string
+          seller_id: string
+          signing_url_buyer?: string | null
+          signing_url_seller?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          completed_at?: string | null
+          created_at?: string
+          document_type?: string
+          envelope_id?: string
+          id?: string
+          listing_id?: string
+          seller_id?: string
+          signing_url_buyer?: string | null
+          signing_url_seller?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "docusign_envelopes_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escrow: {
         Row: {
           amount: number
           buyer_id: string
+          completion_date: string | null
           created_at: string
+          docusign_envelope_id: string | null
           id: string
           listing_id: string
           seller_id: string
           status: Database["public"]["Enums"]["escrow_status"]
+          stripe_customer_id: string | null
           stripe_payment_intent_id: string | null
           updated_at: string
         }
         Insert: {
           amount: number
           buyer_id: string
+          completion_date?: string | null
           created_at?: string
+          docusign_envelope_id?: string | null
           id?: string
           listing_id: string
           seller_id: string
           status?: Database["public"]["Enums"]["escrow_status"]
+          stripe_customer_id?: string | null
           stripe_payment_intent_id?: string | null
           updated_at?: string
         }
         Update: {
           amount?: number
           buyer_id?: string
+          completion_date?: string | null
           created_at?: string
+          docusign_envelope_id?: string | null
           id?: string
           listing_id?: string
           seller_id?: string
           status?: Database["public"]["Enums"]["escrow_status"]
+          stripe_customer_id?: string | null
           stripe_payment_intent_id?: string | null
           updated_at?: string
         }
@@ -195,6 +257,13 @@ export type Database = {
             columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_docusign_envelope_id_fkey"
+            columns: ["docusign_envelope_id"]
+            isOneToOne: false
+            referencedRelation: "docusign_envelopes"
             referencedColumns: ["id"]
           },
           {
@@ -212,6 +281,54 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      kyc_documents: {
+        Row: {
+          created_at: string
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_type: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_type?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       listings: {
         Row: {
@@ -386,6 +503,30 @@ export type Database = {
           id?: string
           name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      stripe_customers: {
+        Row: {
+          created_at: string
+          id: string
+          stripe_customer_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          stripe_customer_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          stripe_customer_id?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

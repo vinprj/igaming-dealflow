@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -55,9 +54,17 @@ export default function CreateListing() {
       const { error } = await supabase
         .from('listings')
         .insert({
-          ...data,
+          title: data.title,
+          description: data.description,
+          category: data.category,
+          country: data.country,
+          license_type: data.license_type,
+          price: data.price,
+          revenue_monthly: data.revenue_monthly,
+          revenue_annual: data.revenue_annual,
+          is_public: data.is_public,
           seller_id: user?.id,
-          status: 'draft',
+          status: 'draft' as const,
         });
 
       if (error) {
