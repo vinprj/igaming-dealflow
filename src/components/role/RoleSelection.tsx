@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, ShoppingCart, Store } from 'lucide-react';
 
+type UserRole = 'buyer' | 'seller' | 'admin';
+
 const roleOptions = [
   {
-    id: 'buyer',
+    id: 'buyer' as UserRole,
     title: 'Buyer',
     description: 'Browse and acquire iGaming assets',
     icon: ShoppingCart,
@@ -20,7 +22,7 @@ const roleOptions = [
     ]
   },
   {
-    id: 'seller',
+    id: 'seller' as UserRole,
     title: 'Seller',
     description: 'List and sell your iGaming assets',
     icon: Store,
@@ -34,10 +36,10 @@ const roleOptions = [
 ];
 
 export const RoleSelection = () => {
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([]);
   const { updateProfile, loading } = useAuth();
 
-  const toggleRole = (roleId: string) => {
+  const toggleRole = (roleId: UserRole) => {
     setSelectedRoles(prev => 
       prev.includes(roleId)
         ? prev.filter(id => id !== roleId)

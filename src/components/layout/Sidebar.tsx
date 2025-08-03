@@ -12,48 +12,50 @@ import {
   BarChart
 } from 'lucide-react';
 
+type UserRole = 'buyer' | 'seller' | 'admin';
+
 const navigationItems = [
   { 
     name: 'Dashboard', 
     icon: Home, 
     href: '/dashboard',
-    roles: ['buyer', 'seller', 'admin']
+    roles: ['buyer', 'seller', 'admin'] as UserRole[]
   },
   { 
     name: 'Browse Listings', 
     icon: Search, 
     href: '/browse',
-    roles: ['buyer']
+    roles: ['buyer'] as UserRole[]
   },
   { 
     name: 'Create Listing', 
     icon: PlusCircle, 
     href: '/create-listing',
-    roles: ['seller']
+    roles: ['seller'] as UserRole[]
   },
   { 
     name: 'My Listings', 
     icon: FileText, 
     href: '/my-listings',
-    roles: ['seller']
+    roles: ['seller'] as UserRole[]
   },
   { 
     name: 'Messages', 
     icon: MessageCircle, 
     href: '/messages',
-    roles: ['buyer', 'seller']
+    roles: ['buyer', 'seller'] as UserRole[]
   },
   { 
     name: 'Analytics', 
     icon: BarChart, 
     href: '/analytics',
-    roles: ['admin']
+    roles: ['admin'] as UserRole[]
   },
   { 
     name: 'Settings', 
     icon: Settings, 
     href: '/settings',
-    roles: ['buyer', 'seller', 'admin']
+    roles: ['buyer', 'seller', 'admin'] as UserRole[]
   },
 ];
 

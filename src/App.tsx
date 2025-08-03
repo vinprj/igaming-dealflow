@@ -8,12 +8,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { RoleSelection } from "@/components/role/RoleSelection";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import BrowseListings from "./pages/BrowseListings";
+import CreateListing from "./pages/CreateListing";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) => {
   const { user, profile, loading } = useAuth();
 
   if (loading) {
@@ -30,6 +32,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!profile?.roles || profile.roles.length === 0) {
     return <RoleSelection />;
+  }
+
+  // Check if user has required role for this route
+  if (allowedRoles && !allowedRoles.some(role => profile.roles.includes(role as any))) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -69,6 +76,18 @@ const App = () => (
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/browse" element={
+            <ProtectedRoute allowedRoles={['buyer']}>
+              <BrowseListings />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/create-listing" element={
+            <ProtectedRoute allowedRoles={['seller']}>
+              <CreateListing />
             </ProtectedRoute>
           } />
 
