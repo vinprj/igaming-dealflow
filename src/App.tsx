@@ -12,6 +12,9 @@ import BrowseListings from "./pages/BrowseListings";
 import CreateListing from "./pages/CreateListing";
 import KYCPage from "./pages/KYCPage";
 import TransactionsPage from "./pages/TransactionsPage";
+import MessagesPage from "./pages/MessagesPage";
+import SettingsPage from "./pages/SettingsPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -102,6 +105,24 @@ const App = () => (
           <Route path="/transactions" element={
             <ProtectedRoute>
               <TransactionsPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/messages" element={
+            <ProtectedRoute>
+              <MessagesPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <SettingsPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/notifications" element={
+            <ProtectedRoute>
+              <NotificationsPage />
             </ProtectedRoute>
           } />
 
