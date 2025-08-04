@@ -10,6 +10,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import BrowseListings from "./pages/BrowseListings";
 import CreateListing from "./pages/CreateListing";
+import KYCPage from "./pages/KYCPage";
+import TransactionsPage from "./pages/TransactionsPage";
 import NotFound from "./pages/NotFound";
 import { Loader2 } from "lucide-react";
 
@@ -88,6 +90,18 @@ const App = () => (
           <Route path="/create-listing" element={
             <ProtectedRoute allowedRoles={['seller']}>
               <CreateListing />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/kyc" element={
+            <ProtectedRoute>
+              <KYCPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/transactions" element={
+            <ProtectedRoute>
+              <TransactionsPage />
             </ProtectedRoute>
           } />
 
